@@ -16,7 +16,7 @@ $json = json_decode($str);
 
 
 $excel = new COM("Excel.Application");
-$book = $excel->Workbooks->Open("C:/WebServers/home/test1.ru/test.xlsx");
+$book = $excel->Workbooks->Open("C:/WebServers/home/192.168.1.40/www/Reports/test.xlsx");
 $sheet = $book->WorkSheets->Add();
 		  
 $query="SELECT *
@@ -48,8 +48,10 @@ mysql_query("SET NAMES cp1251");
 
 $q=mysql_query($query);
 
-$i = 3;
+$i = 2;
 while($e=mysql_fetch_assoc($q)){
+	
+	$i++;
     
     foreach($e as $key => $value){
         switch ($key){
@@ -65,13 +67,13 @@ while($e=mysql_fetch_assoc($q)){
             $sheet->cells($i,3)->value = $value;
             break;
         }
-    }
-    
-    $i++;
+    }   
 }
 
-$excel->ActiveSheet->Range("B3:B$i")->NumberFormat = "0";
-$excel->ActiveSheet->Range("B2:E$i")->HorizontalAlignment = -4108;
+$sheet->Range("B3:B$i")->NumberFormat = "0";
+$sheet->Range("B2:E$i")->HorizontalAlignment = -4108;
+$sheet->Range("B2:E$i")->Borders->LineStyle = 1;
+
 
 print "Complete!";
 
