@@ -29,7 +29,7 @@ $q=mysql_query($query);
 
 $name = mysql_result($q,0,"name");
 
-$sheet->Name = "$name" . " " . date("m.d.y");
+$sheet->Name = "$name" . " " . date("d.m.y");
 
 $sheet->Columns(2)->ColumnWidth = 25;
 $sheet->Columns(3)->ColumnWidth = 50;
@@ -41,8 +41,10 @@ $sheet->cells(2,3)->value = "Name";
 $sheet->cells(2,4)->value = "Responsible Person";
 $sheet->cells(2,5)->value = "Presence";
 
-$query = "SELECT *
-         FROM `first` WHERE room_id = '$json[0]'";
+$query = "SELECT first.name AS name, first.code AS code, person.name AS person 
+		  FROM first LEFT OUTER JOIN person 
+          ON first.person_id = person.id 
+			WHERE room_id = '$json[0]'";
 
 mysql_query("SET NAMES cp1251");
 
@@ -54,6 +56,7 @@ while($e=mysql_fetch_assoc($q)){
 	$i++;
     
     foreach($e as $key => $value){
+		if(isset($value)){
         switch ($key){
         case "code":
             $sheet->cells($i,2)->value = $value;
@@ -66,7 +69,11 @@ while($e=mysql_fetch_assoc($q)){
         case "name":
             $sheet->cells($i,3)->value = $value;
             break;
+		case "person":
+			$sheet->cells($i,4)->value = $value;
+			break;
         }
+		}
     }   
 }
 
